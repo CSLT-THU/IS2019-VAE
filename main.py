@@ -1,1 +1,1 @@
-from vae import *
+from model.vae import *
