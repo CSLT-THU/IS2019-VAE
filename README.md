@@ -1,14 +1,14 @@
 # v-vector-tf
 
-Tensorflow implementation of our interspeech paper "VAE-based regularization for deep speaker embedding"
+Tensorflow and kaldi implementation of our interspeech paper "VAE-based regularization for deep speaker embedding"
 
 ## Dependency
 
-0. computer
-1. Linux (centos)
-2. conda (Python 3.6)
-3. Tensorflow-gpu 1.8
-4. kaldi-tookit
+1. computer
+2. Linux (centos)
+3. conda (Python 3.6)
+4. Tensorflow-gpu 1.8
+5. kaldi-tookit
 
 ## Setting up the environment
 
@@ -26,10 +26,10 @@ Tensorflow implementation of our interspeech paper "VAE-based regularization for
 
 1. use kaldi to extract x-vector from uttrance (xvector.ark)
 
-1. Covert the kaldi vector files to numpy binary data format (ark->npz)
+2. Covert the kaldi vector files to numpy binary data format (ark->npz)
 
-2. use tensorflow to train a model
+3. use tensorflow to train a model
 
-3. use kaldi recipes to calculate EER
+4. use kaldi recipes to calculate EER
 
 ## About
