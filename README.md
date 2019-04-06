@@ -14,7 +14,7 @@ Tensorflow implementation of our interspeech paper "VAE-based regularization for
 
 1. install kaldi
 
-2. create a conda environment and install the necessary Python package.
+2. create a conda environment and install the necessary Python package
 
 ## Datasets and X-vector
 
@@ -24,9 +24,11 @@ Tensorflow implementation of our interspeech paper "VAE-based regularization for
 
 ## Useage
 
+1. use kaldi to extract x-vector from uttrance (xvector.ark)
+
 1. Covert the kaldi vector files to numpy binary data format (ark->npz)
 
-2. use tensorflow to train a model 
+2. use tensorflow to train a model
 
 3. use kaldi recipes to calculate EER
 
