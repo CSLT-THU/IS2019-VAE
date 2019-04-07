@@ -33,7 +33,7 @@ pip install -r requirements.txt
 
 1. use kaldi to extract x-vector from uttrance and get `xvector.ark` files
 2. covert the kaldi `xvector.ark` files to numpy binary data format (`xvector.ark` -> `xvector.npz`)
-3. use tensorflow to train a model
-4. use kaldi recipes to calculate EER
+3. use tensorflow to train a VAE model, and get the V-vector
+4. use kaldi recipes to calculate EER (equal error rate)
 
 ## About
