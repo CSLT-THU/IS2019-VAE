@@ -13,9 +13,7 @@ Tensorflow and kaldi implementation of our interspeech paper "VAE-based regulari
 ## Setting up the environment
 
 1. [install kaldi](https://github.com/kaldi-asr/kaldi)
-
 2. git clone the code and modify the `path.sh`, make sure that `path.sh` contains your kaldi path
-
 3. create a conda environment and install the necessary Python package
 
 ```bash
@@ -31,14 +29,11 @@ pip install -r requirements.txt
 2. SITW
 3. CSLT_SITW
 
-## Useage
+## Steps
 
 1. use kaldi to extract x-vector from uttrance and get `xvector.ark` files
-
 2. covert the kaldi `xvector.ark` files to numpy binary data format (`xvector.ark` -> `xvector.npz`)
-
 3. use tensorflow to train a model
-
 4. use kaldi recipes to calculate EER
 
 ## About
