@@ -1,6 +1,6 @@
 # v-vector-tf
 
-Tensorflow and kaldi implementation of our interspeech paper [VAE-based regularization for deep speaker embedding](https://github.com/zyzisyz/v-vector-tf/paper.pdf)
+Tensorflow and kaldi implementation of our interspeech paper [VAE-based regularization for deep speaker embedding](https://github.com/zyzisyz/v-vector-tf/blob/master/paper.pdf)
 
 ## Dependency
 
