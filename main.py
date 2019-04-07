@@ -33,11 +33,11 @@ tf.app.flags.DEFINE_float('a', 1., 'a')
 
 tf.app.flags.DEFINE_string('dataset_path', './data/d.npz',
                            'd/x vector data path (npz format)')
-
 # store flag
 params = tf.app.flags.FLAGS
 
 '''model's log and checkpoints paths'''
+
 experiment_dir = '/experiments/'+'z'+str(params.z_dim)+'_h' + str(params.n_hidden)+'_a'+str(params.a)+'_b'+str(params.b)
 experiment_dir = os.path.dirname(os.path.abspath(__file__))+experiment_dir
 checkpoint_dir = experiment_dir+'/checkpoint'
