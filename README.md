@@ -25,7 +25,7 @@ Tensorflow and kaldi implementation of our interspeech paper [VAE-based regulari
 
 ## Useage
 
-1. [install kaldi](https://github.com/kaldi-asr/kaldi) (note: if you are one of cslt member, you can referance[Dr. tzy's Kaldi](https://github.com/tzyll/kaldi))
+1. [install kaldi](https://github.com/kaldi-asr/kaldi) (note: if you are one of CSLT member, you can referance[Dr. tzy's Kaldi](https://github.com/tzyll/kaldi))
 
 2. create a conda environment and install the necessary Python package
 
@@ -47,13 +47,15 @@ sh download.sh
 
 ## About
 
+Licensed under the Apache License, Version 2.0, Copyright [zyzisyz](https://github.com/zyzisyz)
+
 ### Repo Author
 
 Yang Zhang (zyziszy@foxmail.com)
 
 ### Contributors
 
-- [@Lilt](166.111.134.19:8081/lilt/)
+- [@Lilt](http://166.111.134.19:8081/lilt/)
 - [@fatejessie](https://github.com/fatejessie)
 - [@xDarkLemon](https://github.com/xDarkLemon)
 - [@AlanXiuxiu](https://github.com/AlanXiuxiu)
