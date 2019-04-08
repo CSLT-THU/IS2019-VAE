@@ -39,11 +39,11 @@ pip install -r requirements.txt
 3. git clone the code and modify the `path.sh`, make sure that `path.sh` contains your kaldi path
 
 ```bash
-git clone https://github.com/csltstu/kaldi.git
+git clone https://github.com/zyzisyz/v-vector-tf.git
 
 # edit path.sh
 vim path.sh
-export KALDI_ROOT=${replace it by your kaldi root path}
+# export KALDI_ROOT=${replace it by your kaldi root path}
 ```
 
 4. Download x-vector data from CSLT server
