@@ -11,16 +11,9 @@ import os
 import time
 import tensorflow as tf
 import numpy as np
-
 import random
-
 from model.model_utils import *
-
 from scipy import stats
-
-
-def loader(path="./data/test_vector.npz"):
-    return np.load(path)['vector'], np.load(path)['label']
 
 
 class VAE(object):
@@ -28,38 +21,39 @@ class VAE(object):
 
     def __init__(self,
                  sess,
-                 epoch=20,
-                 batch_size=64,
-                 z_dim=512,
-                 n_hidden=1024,
-                 dataset_path='./data/d_train.npz',
-                 checkpoint_dir='./experiments/baseline/checkpoint',
-                 log_dir='./experiments/baseline/log',
-                 keep_prob=1,
-                 beta1=0.5,
-                 learning_rate=0.0001,
-                 b=0.04,
-                 a=15
+                 dataset_path,
+                 checkpoint_dir,
+                 log_dir,
+                 epoch,
+                 batch_size,
+                 z_dim,
+                 n_hidden,
+                 learning_rate,
+                 KL_weigth,
+                 cohesive_weight,
+                 beta1='0.5',
+                 spk_path="./data/voxceleb_combined_200000/spk.npz"
                  ):
-        self.b = b
-        self.a = a
+
+        self.KL_weigth = KL_weigth
+        self.cohesive_weight = cohesive_weight
         self.sess = sess
         self.checkpoint_dir = checkpoint_dir
         self.log_dir = log_dir
 
-        # load data
+        '''load datasets'''
+        # training datasets
         self.dataset_path = dataset_path
-        self.input_data, self.input_utt = loader(dataset_path)
+        self.input_data = np.load(self.dataset_path)['vector']
+        self.input_utt = np.load(self.dataset_path)['label']
 
-        '''input_data | spk_list'''
-        self.spk_list = np.load(
-            './data/voxceleb_combined_200000/spk.npz')['spk']
-        self.spker = np.load(
-            './data/voxceleb_combined_200000/spk.npz')['check']
+        # input_data | spk_list
+        self.spk_list = np.load(spk_path)['spk']
+        self.spker = np.load(spk_path)['check']
 
         '''
-        计算spker人数
-        self.spk_count_shape = (spk_num, z_dim)
+        count spker number
+        self.spk_count_shape : (spk_num, z_dim)
         '''
         spk_count = [0 for _ in range(len(self.spker))]
         for i in self.spk_list:
@@ -74,15 +68,13 @@ class VAE(object):
         self.batch_size = batch_size
 
         # get number of batches for a single epoch
-        # //表示向下取整
         self.num_batches = len(self.input_data) // self.batch_size
 
         self.z_dim = z_dim
-        self.keep_prob = keep_prob
-        self.n_hidden = n_hidden  # MLP的隐含层维度
+        self.n_hidden = n_hidden
 
-        self.dnn_input_dim = 512  # 输入的维度为512
-        self.dnn_output_dim = 512   # 恢复的也是512
+        self.dnn_input_dim = 512
+        self.dnn_output_dim = 512
 
         self.z_dim = z_dim         # dimension of v-vector
 
@@ -90,53 +82,64 @@ class VAE(object):
         self.learning_rate = learning_rate
         self.beta1 = beta1
 
+        '''build the model'''
+        self.chech_data()
+        self.build_model()
+
+    def chech_data(self):
+        '''use to check data'''
+        pass
+
     # Gaussian MLP Encoder
-    def MPL_encoder(self, x, n_hidden, n_output, keep_prob):
+    def MPL_encoder(self, x, n_hidden, n_output):
         with tf.variable_scope("gaussian_MLP_encoder"):
 
             # initializers
-
             w_init = tf.contrib.layers.variance_scaling_initializer()
             b_init = tf.constant_initializer(0.)
 
-            net = MLP_net(input=x, layer_name="p1", n_hidden=n_hidden, acitvate='sigmoid')
-    
-            net = MLP_net(input=net,layer_name="p2", n_hidden=n_hidden, acitvate='elu')
-
-            net = MLP_net(input=net, layer_name="p3", n_hidden=n_hidden, acitvate='elu')
-
-            net = MLP_net(input=net, layer_name="p4", n_hidden=n_hidden, acitvate='tanh')
+            # layer-1
+            net = MLP_net(input=x, layer_name="p1",
+                          n_hidden=n_hidden, acitvate='sigmoid')
+            # layer-2
+            net = MLP_net(input=net, layer_name="p2",
+                          n_hidden=n_hidden, acitvate='elu')
+            # layer-3
+            net = MLP_net(input=net, layer_name="p3",
+                          n_hidden=n_hidden, acitvate='elu')
+            # layer-4
+            net = MLP_net(input=net, layer_name="p4",
+                          n_hidden=n_hidden, acitvate='tanh')
 
             wo = tf.get_variable(
                 'wo', [net.get_shape()[1], n_output * 2], initializer=w_init)
             bo = tf.get_variable('bo', [n_output * 2], initializer=b_init)
-
             gaussian_params = tf.matmul(net, wo) + bo
 
             mean = gaussian_params[:, :n_output]
-
             stddev = 1e-6 + tf.nn.softplus(gaussian_params[:, n_output:])
 
         return mean, stddev
 
     # Bernoulli decoder
-    def MLP_decoder(self, z, n_hidden, n_output, keep_prob):
+    def MLP_decoder(self, z, n_hidden, n_output):
         with tf.variable_scope("bernoulli_MLP_decoder"):
 
             # initializers
             w_init = tf.contrib.layers.variance_scaling_initializer()
             b_init = tf.constant_initializer(0.)
 
-            # layer-0
-            net = MLP_net(input=z,layer_name="q1", n_hidden=n_hidden, acitvate="tanh")
-
-            net = MLP_net(input=z, layer_name="q2", n_hidden=n_hidden, acitvate="elu",
-                          keep_prob=keep_prob)
-
             # layer-1
-            net = MLP_net(input=net, layer_name="q3", n_hidden=n_hidden, acitvate='elu')
+            net = MLP_net(input=z, layer_name="q1",
+                          n_hidden=n_hidden, acitvate="tanh")
+            # layer-2
+            net = MLP_net(input=z, layer_name="q2",
+                          n_hidden=n_hidden, acitvate="elu")
+            # layer-3
+            net = MLP_net(input=net, layer_name="q3",
+                          n_hidden=n_hidden, acitvate='elu')
 
-            # output layer-mean
+            # output
             wo = tf.get_variable(
                 'wo', [net.get_shape()[1], n_output], initializer=w_init)
             bo = tf.get_variable('bo', [n_output], initializer=b_init)
@@ -151,9 +154,9 @@ class VAE(object):
         return utt_table
         '''
         mean = np.array(mean, dtype=np.float32)
-        num_spker = len(self.spker) 
-        counter = np.array(self.spk_count, dtype=np.int32) 
-        
+        num_spker = len(self.spker)
+        counter = np.array(self.spk_count, dtype=np.int32)
+
         '''init mean'''
         spk_table = np.zeros(shape=(num_spker, self.z_dim), dtype=np.float32)
 
@@ -182,7 +185,7 @@ class VAE(object):
 
         # encoding
         self.mu, self.sigma = self.MPL_encoder(
-            self.inputs, self.n_hidden, self.z_dim, self.keep_prob)
+            self.inputs, self.n_hidden, self.z_dim)
 
         # sampling by re-parameterization
         z = self.mu + self.sigma * \
@@ -190,23 +193,25 @@ class VAE(object):
 
         # decoding
         self.out = self.MLP_decoder(
-            z, self.n_hidden, self.dnn_output_dim, self.keep_prob)
+            z, self.n_hidden, self.dnn_output_dim)
 
         '''loss'''
-        # MSE
+
+        # reconstruct loss
         re_construct_loss = tf.reduce_sum(tf.square(self.inputs-self.out), 1)
         self.re_construct_loss = tf.reduce_mean(re_construct_loss)
 
         # KL Loss
         KL_divergence = 0.5 * tf.reduce_sum(tf.square(self.mu) + tf.square(
             self.sigma) - tf.log(1e-8 + tf.square(self.sigma)) - 1, 1)
-        self.KL_divergence = self.b*tf.reduce_mean(KL_divergence)
+        self.KL_divergence = self.KL_weigth*tf.reduce_mean(KL_divergence)
 
-        self.mse2 = self.a * \
+        # cohesive_loss
+        self.cohesive_loss = self.cohesive_weight * \
             tf.losses.mean_squared_error(self.mu, self.inputs_table)
 
-        ## all loss
-        self.loss = self.re_construct_loss + self.KL_divergence + self.mse2
+        # all loss
+        self.loss = self.re_construct_loss + self.KL_divergence + self.cohesive_loss
 
         """ Training """
         t_vars = tf.trainable_variables()
@@ -215,26 +220,24 @@ class VAE(object):
                 .minimize(self.loss, var_list=t_vars)
 
         """ Summary """
-        mse = tf.summary.scalar("re_loss", self.re_construct_loss)
-        kl_sum = tf.summary.scalar("kl", self.KL_divergence)
-        mse = tf.summary.scalar("mse2", self.mse2)
+        re_loss = tf.summary.scalar("re_loss", self.re_construct_loss)
+        kl_sum = tf.summary.scalar("kl_loss", self.KL_divergence)
+        cohesive_loss = tf.summary.scalar("cohesive_loss", self.cohesive_loss)
         loss_sum = tf.summary.scalar("loss", self.loss)
 
         # final summary operations
         self.merged_summary_op = tf.summary.merge_all()
 
-    def train(self):
-        self.build_model()
-
         # initialize all variables
         tf.global_variables_initializer().run()
 
-        # saver to save model
         self.saver = tf.train.Saver()
 
         # summary writer
         self.writer = tf.summary.FileWriter(
             self.log_dir + '/' + self.model_name, self.sess.graph)
+
+    def train(self):
 
         # restore check-point if it exits
         could_load, checkpoint_counter = self.load_ckp(self.checkpoint_dir)
@@ -255,51 +258,42 @@ class VAE(object):
                 self.inputs: self.input_data})
             table = self.update_table(mean)
 
-            input_data, table = shuffle_data(self.input_data, table)
+            input_data, table = shuffle_data_table(self.input_data, table)
+
             # print(table.shape)
             # print(self.spk_count)
             # print(len(self.spk_count))
             # c = input('break')
-            for idx in range(start_batch_id, self.num_batches):
 
+            for idx in range(start_batch_id, self.num_batches):
                 batch_data = input_data[idx *
                                         self.batch_size:(idx+1)*self.batch_size]
                 batch_table = table[idx *
                                     self.batch_size:(idx+1)*self.batch_size]
-
                 # update autoencoder
-                _, summary_str, loss, mse, kl_loss, mse_2 = self.sess.run([self.optim, self.merged_summary_op, self.loss, self.mse, self.KL_divergence, self.mse2],
-                                                                          feed_dict={self.inputs: batch_data, self.inputs_table: batch_table})
+                _, summary_str, loss, re_loss, kl_loss, cohesive_loss = self.sess.run([self.optim, self.merged_summary_op, self.loss, self.re_construct_loss, self.KL_divergence, self.cohesive_loss],
+                                                                                      feed_dict={self.inputs: batch_data, self.inputs_table: batch_table})
                 self.writer.add_summary(summary_str, counter)
 
                 # display training status
                 counter += 1
-                print("Epoch: [%2d] [%4d/%4d] loss: %.8f, mse: %.8f, kl: %.8f, mse2: %.8f, "
-                      % (epoch, idx, self.num_batches, loss, mse, kl_loss, mse_2))
+                print("Epoch: [%2d] [%4d/%4d] loss: %.8f, re_loss: %.8f, kl: %.8f, cohesive: %.8f, "
+                      % (epoch, idx, self.num_batches, loss, re_loss, kl_loss, cohesive_loss))
 
             # After an epoch, start_batch_id is set to zero
             # non-zero value is only for the first epoch after loading pre-trained model
             start_batch_id = 0
 
-            # save model
-            self.save_ckp(self.checkpoint_dir, counter)
+            # save model (every 20 epoch)
+            if epoch % 20 == 0:
+                self.save_ckp(self.checkpoint_dir, counter)
 
         # save model for final step
         self.save_ckp(self.checkpoint_dir, counter)
 
     def predict(self, input_vector):
-
-        # initialize all variables
-        tf.global_variables_initializer().run()
-
-        self.saver = tf.train.Saver()
-
-        # summary writer
-        self.writer = tf.summary.FileWriter(
-            self.log_dir + '/' + self.model_name, self.sess.graph)
-
         # restore check-point if it exits
-        could_load, checkpoint_counter = self.load_ckp(self.checkpoint_dir)
+        could_load, _ = self.load_ckp(self.checkpoint_dir)
         if could_load:
             print(" [*] Load SUCCESS")
         else:
@@ -307,7 +301,6 @@ class VAE(object):
 
         predict_mu = self.sess.run(
             self.mu, feed_dict={self.inputs: input_vector})
-
         return predict_mu
 
     def visualize_results(self, epoch):
@@ -336,6 +329,3 @@ class VAE(object):
         else:
             print(" [*] Failed to find a checkpoint")
             return False, 0
-
-    def eval():
-        pass

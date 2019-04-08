@@ -11,8 +11,8 @@ from scipy import stats
 import random
 
 def get_skew_and_kurt(data):
+    '''calculate skew and kurt'''
     data = np.array(data)
-    # print(data.shape)  # test
     data = data.transpose()
     print(data.shape)  # test
     skew = []
@@ -25,12 +25,12 @@ def get_skew_and_kurt(data):
     skew_mean = sum(skew)/len(skew)  
     kurt_mean = sum(kurt)/len(kurt)
 
-    print('skew:', skew_mean)  # test
-    print('Kurt:', kurt_mean)  # test
-
+    # print('skew:', skew_mean)  # test
+    # print('kurt:', kurt_mean)  # test
     return skew_mean, kurt_mean
 
 def shuffle_data_table(data, table):
+    '''random shuffle data and table'''
     index = [i for i in range(len(data))]
     random.shuffle(index)
     data = data[index]
@@ -38,12 +38,14 @@ def shuffle_data_table(data, table):
     return data, table
 
 def shuffle_data(data):
+    '''random shuffle data'''
     index = [i for i in range(len(data))]
     random.shuffle(index)
     data = data[index]
     return data
 
 def MLP_net(input, layer_name, n_hidden, acitvate="elu"):
+    '''tensorflow-layer'''
     w_init = tf.contrib.layers.variance_scaling_initializer()
     b_init = tf.constant_initializer(0.)
 

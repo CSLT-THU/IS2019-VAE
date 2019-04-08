@@ -4,14 +4,13 @@
 # Mail: zyziszy@foxmail.com
 # Apache 2.0.
 
-from model.vae import *
-
+import os
 import numpy as np
+import tensorflow as tf  # tf-gpu 1.8
+
 from model.vae import *
 from model.model_utils import *
-import tensorflow as tf
-import os
-import time
+
 
 '''flags'''
 
@@ -27,23 +26,29 @@ tf.app.flags.DEFINE_float('learn_rate', 0.00001, 'learn rate')
 
 tf.app.flags.DEFINE_float('beta1', 0.5, 'beta1 for AdamOptimizer')
 
-tf.app.flags.DEFINE_float('b', 0.04, 'b')
+tf.app.flags.DEFINE_float('KL_weigth', 0.04, 'KL_weigth')
 
-tf.app.flags.DEFINE_float('a', 1., 'a')
+tf.app.flags.DEFINE_float('cohesive_weight', 0., 'cohesive loss')
 
 tf.app.flags.DEFINE_string('dataset_path', './data/d.npz',
-                           'd/x vector data path (npz format)')
-# store flag
-params = tf.app.flags.FLAGS
+                           'x vector training dataset path (npz format)')
+
+tf.app.flags.DEFINE_boolean('is_training', True, 'Training/Testing.')
+
+params = tf.app.flags.FLAGS  # store flag
 
 '''model's log and checkpoints paths'''
+experiment_dir = '/experiments/'+'z' + \
+    str(params.z_dim)+'_h' + str(params.n_hidden) + \
+    '_a'+str(params.a)+'_b'+str(params.b)
 
-experiment_dir = '/experiments/'+'z'+str(params.z_dim)+'_h' + str(params.n_hidden)+'_a'+str(params.a)+'_b'+str(params.b)
 experiment_dir = os.path.dirname(os.path.abspath(__file__))+experiment_dir
 checkpoint_dir = experiment_dir+'/checkpoint'
 log_dir = experiment_dir+'/train_log'
 print('model/checkpoint/logs will save in {}.'.format(experiment_dir))
 
+
+'''build the model and train'''
 with tf.Session() as sess:
     vae_model = VAE(
         sess=sess,
@@ -54,44 +59,47 @@ with tf.Session() as sess:
         checkpoint_dir=checkpoint_dir,
         log_dir=log_dir,
         n_hidden=params.n_hidden,
-        keep_prob=params.keep_prob,
+        KL_weigth=params.KL_weigth,
+        cohesive_weight=params.cohesive_weight,
         learning_rate=params.learn_rate,
-        b=params.b,
-        a=params.a
+        beta1=params.beta1
     )
-    print('model/checkpoint/logs will save in {}.'.format(experiment_dir))
+    if params.is_training:
+        vae_model.train()
+        print('model / checkpoint / logs will save in {}.'.format(experiment_dir))
 
-    vae_model.train()
-    print('model / checkpoint / logs will save in {}.'.format(experiment_dir))
+    else:
+        paths = ["./data/voxceleb_combined_200000/xvector",
+                 "./data/sitw_dev/enroll/xvector",
+                 "./data/sitw_dev/test/xvector",
+                 "./data/sitw_eval/enroll/xvector",
+                 "./data/sitw_eval/test/xvector"
+                 ]
+        for path in paths:
+            if os.path.exists(path+'.ark') == True:
+                os.remove(path+'.ark')
+                print('delete {}.ark'.format(path))
 
-    paths = ["./data/voxceleb_combined_200000/xvector",
-             "./data/sitw_dev/enroll/xvector",
-             "./data/sitw_dev/test/xvector",
-             "./data/sitw_eval/enroll/xvector",
-             "./data/sitw_eval/test/xvector"
-             ]
+        for path in paths:
+            # load data
+            vector = np.load(path+'.npz')['vector']
+            labels = np.load(path+'.npz')['label']
 
-    for path in paths:
-        if os.path.exists(path+'.ark') == True:
-            os.remove(path+'.ark')
-            print('delete {}.ark'.format(path))
+            # predict
+            predict_mu = vae_model.predict(vector)
+            print(path)
+            print(predict_mu.shape)
+            # get_skew_and_kurt(predict_mu)
+            with open(path+'.ark', 'w') as f:
+                for i in range(predict_mu.shape[0]):
+                    f.write(str(labels[i]))
+                    f.write('  [ ')
+                    for j in predict_mu[i]:
+                        f.write(str(j))
+                        f.write(' ')
+                    f.write(']')
+                    f.write('\n')
+            print('{}.ark is done!'.format(path))
+        print('\nall done!')
 
-    for path in paths:
-        vector, labels = loader(path+'.npz')
-        predict_mu = test.predict(vector)
-        print(path)
-        print(predict_mu.shape)
-        get_skew_and_kurt(predict_mu)
-        with open(path+'.ark', 'w') as f:
-            for i in range(predict_mu.shape[0]):
-                f.write(str(labels[i]))
-                f.write('  [ ')
-                for j in predict_mu[i]:
-                    f.write(str(j))
-                    f.write(' ')
-                f.write(']')
-                f.write('\n')
-        print('{}.ark is done!'.format(path))
-
-    print('\nall done!')
-    print('model/checkpoint/logs will save in {}.'.format(experiment_dir))
+print('done')
