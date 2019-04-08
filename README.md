@@ -40,9 +40,9 @@ pip install -r requirements.txt
 
 ```bash
 git clone https://github.com/csltstu/kaldi.git
-vim path.sh
 
 # edit path.sh
+vim path.sh
 export KALDI_ROOT=${replace it by your kaldi root path}
 ```
 
