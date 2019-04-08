@@ -25,7 +25,7 @@ Tensorflow and kaldi implementation of our Interspeech2019 paper [VAE-based regu
 
 ## Useage
 
-1. [install kaldi](https://github.com/kaldi-asr/kaldi) (note: if you are one of CSLT member, you can referance[Dr. tzy's Kaldi](https://github.com/tzyll/kaldi))
+1. [install kaldi](https://github.com/kaldi-asr/kaldi) (note: if you are one of CSLT members, you can referance[Dr. tzy's Kaldi](https://github.com/tzyll/kaldi) or [CSLT Kaldi](https://github.com/csltstu/kaldi))
 
 2. create a conda environment and install the necessary Python package
 
@@ -38,12 +38,37 @@ pip install -r requirements.txt
 
 3. git clone the code and modify the `path.sh`, make sure that `path.sh` contains your kaldi path
 
+```bash
+git clone https://github.com/csltstu/kaldi.git
+vim path.sh
+
+# edit path.sh
+export KALDI_ROOT=${replace it by your kaldi root path}
+```
+
 4. Download x-vector data from CSLT server
 
 ```bash
 cd data
 sh download.sh
 ```
+
+5. Train a model
+
+```bash
+# first of all, activate the conda Python environment
+conda activate tf
+# you can edit train.sh to change VAE model's config
+sh train.sh
+```
+
+6. Use kaldi-toolkit to train the backend scoring model and calculate EER
+
+```bash
+sh eval.sh
+```
+
+## Our result
 
 ## About
 
