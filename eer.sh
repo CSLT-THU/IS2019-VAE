@@ -3,7 +3,7 @@
 #             2017   Johns Hopkins University (Author: Daniel Povey)
 #        2017-2018   David Snyder
 #             2018   Ewald Enzinger
-#             2019   CSTL-THU (Author: Lantian Li)
+#             2019   Tsinghua University (Author: Lantian Li)
 #             2019   Yang Zhang
 # Apache 2.0.
 #
