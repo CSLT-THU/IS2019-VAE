@@ -231,7 +231,7 @@ class VAE(object):
         # initialize all variables
         tf.global_variables_initializer().run()
 
-        self.saver = tf.train.Saver()
+        self.saver = tf.train.Saver(max_to_keep=250)
 
         # summary writer
         self.writer = tf.summary.FileWriter(
@@ -284,8 +284,8 @@ class VAE(object):
             # non-zero value is only for the first epoch after loading pre-trained model
             start_batch_id = 0
 
-            # save model (every 20 epoch)
-            if epoch % 20 == 0:
+            # save model (every 10 epoch)
+            if epoch % 10 == 0:
                 self.save_ckp(self.checkpoint_dir, counter)
 
         # save model for final step

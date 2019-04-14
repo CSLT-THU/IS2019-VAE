@@ -5,6 +5,7 @@
 #
 # This script trains PLDA models and does scoring.
 
+lda_dim=150
 covar_factor=0.1
 simple_length_norm=false # If true, replace the default length normalization
 # performed in PLDA  by an alternative that

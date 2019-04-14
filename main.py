@@ -40,7 +40,7 @@ params = tf.app.flags.FLAGS  # store flag
 '''model's log and checkpoints paths'''
 experiment_dir = '/experiments/'+'z' + \
     str(params.z_dim)+'_h' + str(params.n_hidden) + \
-    '_a'+str(params.a)+'_b'+str(params.b)
+    '_kl'+str(params.KL_weigth)+'_c'+str(params.cohesive_weight)
 
 experiment_dir = os.path.dirname(os.path.abspath(__file__))+experiment_dir
 checkpoint_dir = experiment_dir+'/checkpoint'
