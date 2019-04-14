@@ -11,7 +11,7 @@ python -u main.py   --epoch 200 \
                     --z_dim 200 \
                     --KL_weigth 0.04 \
                     --cohesive_weight 0 \
-                    --is_training False
+                    --is_training false
 
 wait
 
