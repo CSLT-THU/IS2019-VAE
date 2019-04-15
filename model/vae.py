@@ -328,7 +328,7 @@ class VAE(object):
             return True, counter
         else:
             print(" [*] Failed to find a checkpoint")
-            return False, 
+            return False, 0
             
     def all_cpk_paths(self):
         ckpt = tf.train.get_checkpoint_state(self.checkpoint_dir)
