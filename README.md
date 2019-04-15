@@ -2,7 +2,7 @@
 
 Tensorflow and kaldi implementation of our Interspeech2019 paper [VAE-based regularization for deep speaker embedding](https://github.com/zyzisyz/v-vector-tf/raw/master/paper.pdf)
 
-(note: the repo is not the final release, I will clean up our experiemental code and update soon)
+**note: the repo is not the final release, I will clean up our experiemental code and update soon**
 
 ## Dependency
 
