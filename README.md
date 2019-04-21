@@ -48,11 +48,12 @@ vim path.sh
 # export KALDI_ROOT=${replace it by your kaldi root path}
 ```
 
-4. Download x-vector data from CSLT server
+4. calculate baseline EER
 
 ```bash
-cd data
-sh download.sh
+chmod -r+x *.sh
+chmod -r+x *.pl
+sh baseline.sh
 ```
 
 5. Train a model
