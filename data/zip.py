@@ -12,7 +12,7 @@ path = './xvector.ark'
 def ark2npz(path):
     count = 0
     labels = []
-    train = []
+    vector = []
     with open(path) as f:
         lines = f.readlines()
         for line in lines:
@@ -37,17 +37,17 @@ def ark2npz(path):
             del(num_list[0])
             num_list = list(map(eval, num_list))
 
-            train.append(num_list)
+            vector.append(num_list)
     labels = np.array(labels, dtype="<U64")
 
-    train = np.array(train, dtype="float64")
+    vector = np.array(vector, dtype="float64")
 
     print("start zip...")
 
     print(labels.shape)
-    print(train.shape)
+    print(vector.shape)
 
-    np.savez('./a', vector=train, label=labels)
+    np.savez('./xvector.npz', vector=vector, label=labels)
 
     print("zip is done")
 
