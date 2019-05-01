@@ -11,29 +11,29 @@ all_labels = []
 for i in utt2spk:
     all_labels.append(i[1].strip('id'))
 
-check = []
+spker = []
 for i in all_labels:
-    if i not in check:
-        check.append(i)
+    if i not in spker:
+        spker.append(i)
 spk = []
 
 temp = []
 for i in all_labels:
-    for j in range(len(check)):
-        if check[j] == i:
+    for j in range(len(spker)):
+        if spker[j] == i:
             temp.append(j)
             print(j)
 spk = np.array(temp)
 spk = spk.reshape(-1, 1)
 
-check = []
+spker = []
 for i in temp:
-    if i not in check:
-        check.append(i)
+    if i not in spker:
+        spker.append(i)
 
-check=np.array(check)
+spker=np.array(spker)
 
 print('spk', spk.shape)
-print('check',check.shape)
+print('spker',spker.shape)
 print("start zip...")
-np.savez('./spk.npz', spk=spk,check=check)
+np.savez('./spk.npz', spk_list=spk,spker=spker)

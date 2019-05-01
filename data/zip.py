@@ -47,7 +47,7 @@ def ark2npz(path):
     print(labels.shape)
     print(vector.shape)
 
-    np.savez('./xvector.npz', vector=vector, label=labels)
+    np.savez('./xvector.npz', vector=vector, utt=labels)
 
     print("zip is done")
 
