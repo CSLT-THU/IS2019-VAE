@@ -83,7 +83,7 @@ with tf.Session() as sess:
         for path in paths:
             # load data
             vector = np.load(path+'.npz')['vector']
-            labels = np.load(path+'.npz')['label']
+            labels = np.load(path+'.npz')['utt']
 
             # predict
             predict_mu = vae_model.predict(vector)
