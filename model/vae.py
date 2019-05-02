@@ -45,11 +45,11 @@ class VAE(object):
         # training datasets
         self.dataset_path = dataset_path
         self.input_data = np.load(self.dataset_path)['vector']
-        self.input_utt = np.load(self.dataset_path)['label']
+        self.input_utt = np.load(self.dataset_path)['utt']
 
         # input_data | spk_list
-        self.spk_list = np.load(spk_path)['spk']
-        self.spker = np.load(spk_path)['check']
+        self.spk_list = np.load(spk_path)['spk_list']
+        self.spker = np.load(spk_path)['spker']
 
         '''
         count spker number

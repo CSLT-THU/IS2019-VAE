@@ -32,8 +32,8 @@ for path in paths:
             for j in vector[i]:
                 f.write(str(j))
                 f.write(' ')
-                f.write(']')
-                f.write('\n')
+            f.write(']')
+            f.write('\n')
     print('{}.ark is done!'.format(path))
-
+    
 print('\nall done!')

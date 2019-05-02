@@ -51,8 +51,6 @@ vim path.sh
 4. calculate baseline EER
 
 ```bash
-chmod -r+x *.sh
-chmod -r+x *.pl
 sh baseline.sh
 ```
 
