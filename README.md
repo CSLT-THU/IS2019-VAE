@@ -25,7 +25,7 @@ Tensorflow and kaldi implementation of our Interspeech2019 paper [VAE-based regu
 3. use tensorflow to train a VAE model, and get the V-vectors
 4. use kaldi recipes to calculate EER (equal error rate)
 
-## Useage
+## Usage
 
 1. [install kaldi](https://github.com/kaldi-asr/kaldi) (note: if you are one of CSLT members, you can referance[Dr. tzy's Kaldi](https://github.com/tzyll/kaldi) or [CSLT Kaldi](https://github.com/csltstu/kaldi))
 
