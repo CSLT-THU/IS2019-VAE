@@ -51,7 +51,7 @@ vim path.sh
 4. calculate baseline EER
 
 ```bash
-sh baseline.sh
+bash baseline.sh
 ```
 
 5. Train a model
@@ -60,13 +60,13 @@ sh baseline.sh
 # first of all, activate the conda Python environment
 conda activate tf
 # you can edit train.sh to change VAE model's config
-sh train.sh
+bash train.sh
 ```
 
 6. Use kaldi-toolkit to train the backend scoring model and calculate EER
 
 ```bash
-sh eval.sh
+bash eval.sh
 ```
 
 ## Our result
