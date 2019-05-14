@@ -71,6 +71,17 @@ bash eval.sh
 
 ## Our result
 
+SITW Dev. Core
+
+|          |  Cosine  |   PCA    |   PLDA   |  L-PLDA  |  P-PLDA  |
+| :------: | :------: | :------: | :------: | :------: | :------: |
+| x-vector |  15.67   |  16.17   |   9.09   | **3.12** |   4.16   |
+| a-vector |  16.10   |  16.48   |  11.21   |   4.24   |   5.01   |
+| v-vector |  10.32   |   9.94   |   3.62   |   3.54   |   4.31   |
+| c-vector | **9.05** | **8.55** | **3.50** |   3.31   | **3.85** |
+
+Read the paper for more detail
+
 ## About
 
 Licensed under the Apache License, Version 2.0, Copyright [zyzisyz](https://github.com/zyzisyz)

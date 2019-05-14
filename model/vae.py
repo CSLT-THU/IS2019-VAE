@@ -137,7 +137,7 @@ class VAE(object):
                           n_hidden=n_hidden, acitvate="elu")
             # layer-3
             net = MLP_net(input=net, layer_name="q3",
-                          n_hidden=n_hidden, acitvate='elu')
+                          n_hidden=n_hidden, acitvate='sigmoid')
 
             # output
             wo = tf.get_variable(

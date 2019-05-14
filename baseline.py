@@ -24,7 +24,7 @@ for path in paths:
 for path in paths:
     # load npz data
     vector = np.load(path+'.npz')['vector']
-    labels = np.load(path+'.npz')['label']
+    labels = np.load(path+'.npz')['utt']
     with open(path+'.ark', 'w') as f:
         for i in range(vector.shape[0]):
             f.write(str(labels[i]))

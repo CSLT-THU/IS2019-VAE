@@ -11,7 +11,7 @@ if [ -f path.sh ]; then . ./path.sh; fi
 . parse_options.sh || exit 1;
 
 if [ $# != 4 ]; then
-    echo "Usage: $0 <enroll-data-dir> <test-data-dir> <trials-file> <scores-dir>"
+	echo "Usage: $0 <enroll-data-dir> <test-data-dir> <trials-file> <scores-dir>"
 fi
 
 enroll_data_dir=$1
@@ -21,8 +21,8 @@ scores_dir=$4
 
 mkdir -p $scores_dir/log
 run.pl $scores_dir/log/cosine_scoring.log \
-cat $trials \| awk '{print $1" "$2}' \| \
-ivector-compute-dot-products - \
-"ark:ivector-normalize-length ark:${enroll_data_dir}/xvector.ark ark:- |" \
-"ark:ivector-normalize-length ark:${test_data_dir}/xvector.ark ark:- |" \
-$scores_dir/cosine_scores || exit 1;
+	cat $trials \| awk '{print $1" "$2}' \| \
+	ivector-compute-dot-products - \
+	"ark:ivector-normalize-length ark:${enroll_data_dir}/xvector.ark ark:- |" \
+	"ark:ivector-normalize-length ark:${test_data_dir}/xvector.ark ark:- |" \
+	$scores_dir/cosine_scores || exit 1;
