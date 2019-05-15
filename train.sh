@@ -13,5 +13,5 @@ python -u main.py \
 	--z_dim 200 \
 	--KL_weigth 0.03 \
 	--cohesive_weight 0 \
-	--is_training true
+	--is_training 1 
 

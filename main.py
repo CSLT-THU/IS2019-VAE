@@ -33,7 +33,7 @@ tf.app.flags.DEFINE_float('cohesive_weight', 0., 'cohesive loss')
 tf.app.flags.DEFINE_string('dataset_path', './data/d.npz',
                            'x vector training dataset path (npz format)')
 
-tf.app.flags.DEFINE_boolean('is_training', True, 'Training/Testing.')
+tf.app.flags.DEFINE_integer('is_training', 1, 'Training/Testing.')
 
 params = tf.app.flags.FLAGS  # store flag
 
