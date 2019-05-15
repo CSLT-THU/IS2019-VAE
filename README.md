@@ -25,7 +25,7 @@ Tensorflow and kaldi implementation of our Interspeech2019 paper [VAE-based regu
 3. use tensorflow to train a VAE model, and get the V-vectors
 4. use kaldi recipes to calculate EER (equal error rate)
 
-## Useage
+## Usage
 
 1. [install kaldi](https://github.com/kaldi-asr/kaldi) (note: if you are one of CSLT members, you can referance[Dr. tzy's Kaldi](https://github.com/tzyll/kaldi) or [CSLT Kaldi](https://github.com/csltstu/kaldi))
 
@@ -51,7 +51,7 @@ vim path.sh
 4. calculate baseline EER
 
 ```bash
-sh baseline.sh
+bash baseline.sh
 ```
 
 5. Train a model
@@ -60,16 +60,27 @@ sh baseline.sh
 # first of all, activate the conda Python environment
 conda activate tf
 # you can edit train.sh to change VAE model's config
-sh train.sh
+bash train.sh
 ```
 
 6. Use kaldi-toolkit to train the backend scoring model and calculate EER
 
 ```bash
-sh eval.sh
+bash eval.sh
 ```
 
 ## Our result
+
+SITW Dev. Core
+
+|          |  Cosine  |   PCA    |   PLDA   |  L-PLDA  |  P-PLDA  |
+| :------: | :------: | :------: | :------: | :------: | :------: |
+| x-vector |  15.67   |  16.17   |   9.09   | **3.12** |   4.16   |
+| a-vector |  16.10   |  16.48   |  11.21   |   4.24   |   5.01   |
+| v-vector |  10.32   |   9.94   |   3.62   |   3.54   |   4.31   |
+| c-vector | **9.05** | **8.55** | **3.50** |   3.31   | **3.85** |
+
+Read the paper for more detail
 
 ## About
 

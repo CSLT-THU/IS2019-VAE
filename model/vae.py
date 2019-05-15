@@ -98,17 +98,14 @@ class VAE(object):
             w_init = tf.contrib.layers.variance_scaling_initializer()
             b_init = tf.constant_initializer(0.)
 
-            # layer-1
+            # hidden layer-1
             net = MLP_net(input=x, layer_name="p1",
                           n_hidden=n_hidden, acitvate='sigmoid')
-            # layer-2
+            # hidden layer-2
             net = MLP_net(input=net, layer_name="p2",
                           n_hidden=n_hidden, acitvate='elu')
-            # layer-3
+            # hidden layer-3
             net = MLP_net(input=net, layer_name="p3",
-                          n_hidden=n_hidden, acitvate='elu')
-            # layer-4
-            net = MLP_net(input=net, layer_name="p4",
                           n_hidden=n_hidden, acitvate='tanh')
 
             wo = tf.get_variable(
@@ -129,15 +126,12 @@ class VAE(object):
             w_init = tf.contrib.layers.variance_scaling_initializer()
             b_init = tf.constant_initializer(0.)
 
-            # layer-1
+            # hidden layer-1
             net = MLP_net(input=z, layer_name="q1",
                           n_hidden=n_hidden, acitvate="tanh")
-            # layer-2
-            net = MLP_net(input=z, layer_name="q2",
-                          n_hidden=n_hidden, acitvate="elu")
-            # layer-3
-            net = MLP_net(input=net, layer_name="q3",
-                          n_hidden=n_hidden, acitvate='elu')
+            # hidden layer-2
+            net = MLP_net(input=net, layer_name="q2",
+                          n_hidden=n_hidden, acitvate='sigmoid')
 
             # output
             wo = tf.get_variable(
