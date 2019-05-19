@@ -323,20 +323,18 @@ class VAE(object):
         else:
             print(" [*] Failed to find a checkpoint")
             return False, 0
-            
-    def all_cpk_paths(self):
+
+    def all_ckpt_paths(self):
         ckpt = tf.train.get_checkpoint_state(self.checkpoint_dir)
         return ckpt.all_model_checkpoint_paths
 
     def eval(self, input_vector, n):
-
-        all_ckp_paths = self.all_cpk_paths()
-
-        cpk_path = all_ckp_paths[int(n)]
+        all_ckpt_paths = self.all_ckpt_paths()
+        print(" [*] Reading checkpoints...")
+        ckpt_path = all_ckpt_paths[int(n)]
+        print(" [*] Success to read {}".format(ckpt_path))
         self.saver.restore(self.sess, os.path.join(
-            self.checkpoint_dir, cpk_path))
-
+            self.checkpoint_dir, ckpt_path))
         predict_mu = self.sess.run(
             self.mu, feed_dict={self.inputs: input_vector})
-
         return predict_mu
