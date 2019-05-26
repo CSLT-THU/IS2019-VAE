@@ -10,6 +10,7 @@ python -u main.py \
 	--learn_rate 0.00001 \
 	--beta1 0.5 \
 	--dataset_path ./data/voxceleb_combined_200000/xvector.npz \
+	--spk_path ./data/voxceleb_combined_200000/spk.npz \
 	--z_dim 200 \
 	--KL_weigth 0.03 \
 	--cohesive_weight 0 \

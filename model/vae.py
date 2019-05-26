@@ -31,8 +31,8 @@ class VAE(object):
                  learning_rate,
                  KL_weigth,
                  cohesive_weight,
-                 beta1='0.5',
-                 spk_path="./data/voxceleb_combined_200000/spk.npz"
+                 spk_path,
+                 beta1='0.5'
                  ):
 
         self.KL_weigth = KL_weigth

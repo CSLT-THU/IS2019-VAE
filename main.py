@@ -30,8 +30,11 @@ tf.app.flags.DEFINE_float('KL_weigth', 0.04, 'KL_weigth')
 
 tf.app.flags.DEFINE_float('cohesive_weight', 0., 'cohesive loss')
 
-tf.app.flags.DEFINE_string('dataset_path', './data/d.npz',
-                           'x vector training dataset path (npz format)')
+tf.app.flags.DEFINE_string('dataset_path', './data/voxceleb_combined_200000/xvector.npz',
+                           'x vector dataset path (npz format)')
+
+tf.app.flags.DEFINE_string('spk_path', './data/voxceleb_combined_200000/spk.npz',
+                           'utt2spk label dataset path (npz format)')
 
 tf.app.flags.DEFINE_integer('is_training', 1, 'Training/Testing.')
 
@@ -62,7 +65,8 @@ with tf.Session() as sess:
         KL_weigth=params.KL_weigth,
         cohesive_weight=params.cohesive_weight,
         learning_rate=params.learn_rate,
-        beta1=params.beta1
+        beta1=params.beta1,
+        spk_path=params.spk_path
     )
     if params.is_training:
         vae_model.train()
