@@ -1,24 +1,27 @@
 # Author: Yang Zhang
-# Mail: zyziszy@foxmail.com
+# Author: Xueyi Wang
 # Apache 2.0.
 # 2019, CSLT
 
-
+import argparse
 import os
-import json
 import numpy as np
-path = './xvector.ark'
 
-def ark2npz(path):
+
+def ark2npz(source_path, dest_path):
+    print("source_path: ", source_path)
+    print("dest_path: ", dest_path)
+    print("start zip...")
+    print("waiting...")
+
     count = 0
     labels = []
     vector = []
-    with open(path) as f:
+    with open(source_path) as f:
         lines = f.readlines()
         for line in lines:
             count += 1
-
-            print("load {} success!".format(count))
+            # print("load {} success!".format(count))
             line.strip('\n')
             vector_string = ""
             id = ""
@@ -42,14 +45,22 @@ def ark2npz(path):
 
     vector = np.array(vector, dtype="float64")
 
-    print("start zip...")
-
+    print("vector shape:")
     print(labels.shape)
     print(vector.shape)
 
-    np.savez('./xvector.npz', vector=vector, utt=labels)
+    np.savez(dest_path, vector=vector, utt=labels)
 
-    print("zip is done")
+    print("sucessfully convert {} to {} ".format(source_path, dest_path))
 
-if __name__=="__main__":
-    ark2npz(path)
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--source_path", help="source_path of xvector(ark)")
+    parser.add_argument("--dest_path", help="destination of xvector(npz)")
+    args = parser.parse_args()
+
+    source_path = args.source_path
+    dest_path = args.dest_path
+
+    ark2npz(source_path, dest_path)
